@@ -41,6 +41,7 @@ function nextSequence() {
   }
 
   userClickedPattern = [];
+  $("#start").css("visibility","visible");
   $(".title").html("Level " + level);
   $("#start").html("Moves: " + Moves);
   level++;
@@ -58,12 +59,14 @@ function checkAnswer(currentLevel) {
     if (gamePattern.length === userClickedPattern.length) {
       $(".title").html("Correct!");
       $("html").addClass("correct");
+      $("#start").css("visibility","hidden");
       setTimeout(function () {
         $("html").removeClass("correct");
-      }, 2000);
+        $(".title").html("Level " + level);   
+      }, 500);
       setTimeout(function () {
         nextSequence();
-      }, 2005);
+      }, 2000);
     }
   } else {
     console.log("wrong");

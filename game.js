@@ -2,16 +2,14 @@ const buttonColours = ["red", "blue", "green", "yellow"];
 let gamePattern = [];
 let userClickedPattern = [];
 let level = 1;
-
+let Moves;
 
 $("#start").on("click", function () {
-  if(level<2){
-    $("#start").hide();
+  if (level < 2) {
     setTimeout(function () {
       nextSequence();
     }, 1500);
   }
-  
 });
 
 //Kullanıcıdan buton seçtirme
@@ -20,25 +18,31 @@ $(".btnDiv").click(function () {
   userClickedPattern.push(userChosenColour);
   playSound(userChosenColour);
 
+  Moves -= 1;
+  $("#start").html("Moves: " + Moves);
   checkAnswer(userClickedPattern.length - 1);
-
-  //  animatePress(userChosenColour);
-  // console.log(this);
 });
 
 function nextSequence() {
   let randomNumber = Math.floor(Math.random() * 4);
   let randomChosenColour = buttonColours[randomNumber];
   gamePattern.push(randomChosenColour);
+  Moves = gamePattern.length;
 
-  $("#" + randomChosenColour)
-    .fadeOut(100)
-    .fadeIn(100);
-  playSound(randomChosenColour);
+  if (gamePattern.length > 0) {
+    for (let i = 0; i < gamePattern.length; i++) {
+      setTimeout(function () {
+        $("#" + gamePattern[i])
+          .fadeOut(100)
+          .fadeIn(100);
+        playSound(gamePattern[i]);
+      }, 1000 * i);
+    }
+  }
 
   userClickedPattern = [];
   $(".title").html("Level " + level);
-  
+  $("#start").html("Moves: " + Moves);
   level++;
 }
 
@@ -52,28 +56,31 @@ function checkAnswer(currentLevel) {
     console.log("success");
 
     if (gamePattern.length === userClickedPattern.length) {
+      $(".title").html("Correct!");
+      $("html").addClass("correct");
+      setTimeout(function () {
+        $("html").removeClass("correct");
+      }, 2000);
       setTimeout(function () {
         nextSequence();
-      }, 1000);
+      }, 2005);
     }
   } else {
     console.log("wrong");
     playSound("wrong");
     $(".title").html("Game over, Press Button to restart");
-    $("#start").html("Restart");
     $("html").addClass("wrong");
     setTimeout(function () {
       $("html").removeClass("wrong");
-    },500);
+    }, 500);
     startOver();
   }
 }
 
-function startOver(){
-  gamePattern=[];
-  level=1;
-  $("#start").show();
-
+function startOver() {
+  gamePattern = [];
+  level = 1;
+  $("#start").html("Restart");
 }
 /*
 function animatePress(currentColour){
